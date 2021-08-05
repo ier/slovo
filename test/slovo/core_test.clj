@@ -3,7 +3,7 @@
             [slovo.core :refer [money in-words]]))
 
 
-(deftest wrong-input
+#_(deftest wrong-input
   ;nil
   ;""
   ;0
@@ -28,12 +28,12 @@
 
   (testing "zero rubles to string"
     (let [input 0
-          expected "Ноль рублей 00 копеек"] ;; consider to add option "ноль копеек"
+          expected "Ноль"]
       (is (= expected (in-words input)))))
-  
+
   (testing "big number to string"
     (let [input 123456789987
-          expected "Сто двадцать три миллиарда четыреста пятьдесят шесть миллионов семьсот восемьдесят девять тысяч девятьсот восемьдесят семь рублей 00 копеек"]
+          expected "Сто двадцать три миллиарда четыреста пятьдесят шесть миллионов семьсот восемьдесят девять тысяч девятьсот восемьдесят семь"]
       (is (= expected (in-words input))))))
 
 
@@ -45,5 +45,5 @@
 
   (testing "money to string"
     (let [input 231525
-          expected "Двести тридцать одна тысяча пятьсот двадцать пять рублей 00 копеек"]
-      (is (= expected (in-words input))))))
+          expected "Двести тридцать одна тысяча пятьсот двадцать пять рублей ноль копеек"]
+      (is (= expected (money input))))))
