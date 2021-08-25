@@ -1,6 +1,6 @@
 (ns slovo.core-test
   (:require [clojure.test :refer [deftest testing is]]
-            [slovo.core :refer [money in-words]]))
+            [slovo.core :refer [money words]]))
 
 
 #_(deftest wrong-input
@@ -29,12 +29,12 @@
   (testing "zero rubles to string"
     (let [input 0
           expected "Ноль"]
-      (is (= expected (in-words input)))))
+      (is (= expected (words input)))))
 
   (testing "big number to string"
     (let [input 123456789987
           expected "Сто двадцать три миллиарда четыреста пятьдесят шесть миллионов семьсот восемьдесят девять тысяч девятьсот восемьдесят семь"]
-      (is (= expected (in-words input))))))
+      (is (= expected (words input))))))
 
 
 (deftest ru-money-in-words-test
