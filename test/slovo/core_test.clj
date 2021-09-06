@@ -11,7 +11,7 @@
   )
 
 
-(deftest ru-number-in-words-test  
+(deftest ru-number-in-words-test
   ;[input 9]
   ;[input 30]
   ;[input 193]
@@ -31,6 +31,21 @@
           expected "Ноль"]
       (is (= expected (words input)))))
 
+    (let [inputs-to-expected {1 "Один"
+                              2 "Два"
+                              3 "Три"
+                              4 "Четыре"
+                              5 "Пять"
+                              6 "Шесть"
+                              7 "Семь"
+                              8 "Восемь"
+                              9 "Девять"
+                              10 "Десять"
+                              100 "Сто"
+                              1000 "Одна тысяча"}]
+      (doseq [[input expected] inputs-to-expected]
+        (is (= expected (words input)))))
+
   (testing "big number to string"
     (let [input 123456789987
           expected "Сто двадцать три миллиарда четыреста пятьдесят шесть миллионов семьсот восемьдесят девять тысяч девятьсот восемьдесят семь"]
@@ -47,3 +62,4 @@
     (let [input 231525
           expected "Двести тридцать одна тысяча пятьсот двадцать пять рублей ноль копеек"]
       (is (= expected (money input))))))
+
