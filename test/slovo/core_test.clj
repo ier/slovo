@@ -6,13 +6,11 @@
 #_(deftest wrong-input
   ;nil
   ;""
-  ;0
   ;-1
   )
 
 
 (deftest ru-number-in-words-test
-  ;[input 9]
   ;[input 30]
   ;[input 193]
   ;[input 1234]
