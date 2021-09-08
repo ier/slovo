@@ -10,32 +10,43 @@
 (def ^:private sections [" тысяч" " миллион" " миллиард" " триллион" " квадриллион" " квинтилион" " секстиллион" " септилион" " октилион" " нониллион" " дециллион"])
 
 
-(defn- short-number
-  [num section]
-  (let [number (Integer/parseInt num)
-        h (quot number 100)            ;; сотни числом
-        t (quot (mod number 100) 10)   ;; десятки числом
-        r0 (hundreds (dec h))          ;; сотни прописью
-        s (when (pos? section)
-            (sections (dec section)))] ;; разряд прописью
-    (if (= t 1)
-      (let [r1 (units (- (mod number 100) 3))
-            r (str r0 r1 s)]
-        (if (> section 1)
-          (str r "ов")
-          r))
-      (let [u (mod number 10)          ;; единицы числом
-            r1 (tens (- t 2))
-            r2 (units (- u 3))
-            r (cond
-                (= u 1) (if (= section 1) (str r0 r1 " одна") (str r0 r1 " один"))
-                (= u 2) (if (= section 1) (str r0 r1 " две") (str r0 r1 " два"))
-                (or (and (>= u 3) (<= u 9)) (= u 0)) (str r0 r1 r2))
-            rs (str r s)]
+(defn- translate-to-text
+  [value index]
+  (let [number (->> value trim Integer/parseInt)
+        u (mod number 10)
+        t (quot (mod number 100) 10)
+        h (quot number 100)]
+    (cond
+      (and (pos? u) (zero? t) (zero? h))
+      (cond
+        (= u 1) "один"
+        (= u 2) "два"
+        (and (>= u 3) (<= u 9)) (units (- u 3)))
+
+      :else
+      (let [r0 (if (pos? h) (hundreds (dec h)) "")
+            s (if (pos? index) (sections (dec index)) "")]
         (cond
-          (= u 1) (if (= section 1) (str rs "а") rs)
-          (and (>= u 2) (<= u 4)) (if (= section 1) (str rs "и") (if (> section 1) (str rs "а") rs))
-          (or (and (>= u 5) (<= u 9)) (= u 0)) (if (> section 1) (str rs "ов") rs))))))
+          (= t 1)
+          (let [r1 (units (- (mod number 100) 3))
+                r (str r0 r1 s)]
+            (if (> index 1) (str r "ов") r))
+
+          (and (>= t 2) (<= t 9))
+          (let [r1 (tens (- t 2))
+                r2 (if (and (>= u 3) (<= u 9)) (units (- u 3)) "")
+                r (cond
+                    (= u 1) (if (= index 1) (str r0 r1 " одна") (str r0 r1 " один"))
+                    (= u 2) (if (= index 1) (str r0 r1 " две") (str r0 r1 " два"))
+                    (or (and (>= u 3) (<= u 9)) (= u 0)) (str r0 r1 r2))
+                rs (str r s)]
+            (cond
+              (= u 1) (if (= index 1) (str rs "а") rs)
+              (and (>= u 2) (<= u 4)) (if (= index 1) (str rs "и") (if (> index 1) (str rs "а") rs))
+              (or (and (>= u 5) (<= u 9)) (= u 0)) (if (> index 1) (str rs "ов") rs)
+              :else -1))
+
+          :else -2)))))
 
 
 (defn- categories
@@ -49,21 +60,21 @@
      #(apply str %)
      (->> number
           biginteger
-          (format "%d")
+          (format "%36d")
           (partition 3)
           reverse)))))
 
 
 (defn- in-words
   [number]
+  ;; {:pre ...}
   (if (zero? number)
     "ноль"
     (->> number
          categories
-         (map #(short-number (second %) (first %)))
+         (map #(translate-to-text (second %) (first %)))
          reverse
-         (reduce str)
-         trim)))
+         (reduce str))))
 
 
 (defn words
