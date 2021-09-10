@@ -72,13 +72,12 @@
     (let [inputs-to-expected {1000 "Одна тысяча"}]
       (doseq [[input expected] inputs-to-expected]
         (is (= expected (words input))))))
-  
 
-  
+
   (testing "big number to string"
-      (let [input 123456789987
-            expected "Сто двадцать три миллиарда четыреста пятьдесят шесть миллионов семьсот восемьдесят девять тысяч девятьсот восемьдесят семь"]
-        (is (= expected (words input))))))
+    (let [input 123456789987
+          expected "Сто двадцать три миллиарда четыреста пятьдесят шесть миллионов семьсот восемьдесят девять тысяч девятьсот восемьдесят семь"]
+      (is (= expected (words input))))))
 
 
 #_(deftrest negative-values
