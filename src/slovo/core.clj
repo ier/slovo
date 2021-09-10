@@ -32,8 +32,8 @@
                 r (str r0 r1 s)]
             (if (> index 1) (str r "ов") r))
 
-          (and (>= t 2) (<= t 9))
-          (let [r1 (tens (- t 2))
+          :else
+          (let [r1 (if (>= t 2) (tens (- t 2)) "")
                 r2 (if (and (>= u 3) (<= u 9)) (units (- u 3)) "")
                 r (cond
                     (= u 1) (if (= index 1) (str r0 r1 " одна") (str r0 r1 " один"))
@@ -44,9 +44,7 @@
               (= u 1) (if (= index 1) (str rs "а") rs)
               (and (>= u 2) (<= u 4)) (if (= index 1) (str rs "и") (if (> index 1) (str rs "а") rs))
               (or (and (>= u 5) (<= u 9)) (= u 0)) (if (> index 1) (str rs "ов") rs)
-              :else -1))
-
-          :else -2)))))
+              :else -1)))))))
 
 
 (defn- categories
