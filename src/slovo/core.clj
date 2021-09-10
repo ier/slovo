@@ -74,7 +74,8 @@
          categories
          (map #(translate-to-text (second %) (first %)))
          reverse
-         (reduce str))))
+         (reduce str)
+         trim)))
 
 
 (defn words
