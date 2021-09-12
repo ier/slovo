@@ -1,6 +1,6 @@
 (ns slovo.core
   (:require
-   [clojure.string :refer [trim blank? capitalize]])
+   [clojure.string :refer [trim blank? capitalize split]])
   (:gen-class))
 
 
@@ -160,9 +160,28 @@
           :else "рублей")))))
 
 
+(defn- parse-money
+  [number]
+  (cond
+    (integer? number) {:whole number :fractional 0}
+    (float? number) (let [parts (-> number str (split #"\."))
+                          whole (first parts)
+                          fractional (second parts)]
+                      {:whole whole :fractional fractional})))
+
+
+(defn- kopecks
+  [input]
+  ;;  " копеек"
+  )
+
+
 (defn money
   [number]
-  (let [words (->> number words)
-        rubles (->> number rubles)
-        kopecks (in-words 0)]
-    (str words " " rubles " " kopecks " копеек")))
+  (let [{:keys [whole fractional]} (parse-money number)
+        whole-words (->> whole words)
+        ruble (->> whole rubles)
+        fractional-words (->> fractional words)
+        kopeck (->> fractional kopecks)]
+    (str whole-words " " ruble " " fractional-words " " kopeck)))
+
