@@ -8,7 +8,7 @@
                          "двести"
                          "триста"
                          "четыреста"
-                         "пятьсот" 
+                         "пятьсот"
                          "шестьсот"
                          "семьсот"
                          "восемьсот"
@@ -44,10 +44,10 @@
 (def ^:private sections ["тысяч"
                          "миллион"
                          "миллиард"
-                         "триллион" 
+                         "триллион"
                          "квадриллион"
                          "квинтилион"
-                         "секстиллион" 
+                         "секстиллион"
                          "септилион"
                          "октилион"
                          "нониллион"
@@ -165,23 +165,32 @@
   (cond
     (integer? number) {:whole number :fractional 0}
     (float? number) (let [parts (-> number str (split #"\."))
-                          whole (first parts)
-                          fractional (second parts)]
+                          whole (->> parts first Integer/parseInt)
+                          scnd (second parts)
+                          fractional (-> scnd
+                                         (subs 0 (count scnd))
+                                         Integer/parseInt)]
                       {:whole whole :fractional fractional})))
 
 
 (defn- kopecks
   [input]
-  ;;  " копеек"
-  )
+  (if (zero? input)
+    "копеек"
+    (let [[tens units] (split (str input) #"")]
+      (if (= tens 1)
+        "копеек"
+        (cond
+          (= 1 units) "копейка"
+          (contains? #{2 3 4} units) "копейки"
+          :else "копеек")))))
 
 
 (defn money
   [number]
   (let [{:keys [whole fractional]} (parse-money number)
-        whole-words (->> whole words)
-        ruble (->> whole rubles)
-        fractional-words (->> fractional words)
-        kopeck (->> fractional kopecks)]
+        whole-words (words whole)
+        ruble (rubles whole)
+        fractional-words (in-words fractional)
+        kopeck (kopecks fractional)]
     (str whole-words " " ruble " " fractional-words " " kopeck)))
-

@@ -94,4 +94,30 @@
   (testing "money to string"
     (let [input 231525
           expected "Двести тридцать одна тысяча пятьсот двадцать пять рублей ноль копеек"]
-      (is (= expected (money input))))))
+      (is (= expected (money input)))))
+
+  (testing "zero kopecks 1"
+    (let [input 00.00
+          expected "Ноль рублей ноль копеек"]
+      (is (= expected (money input)))))
+
+  (testing "zero kopecks 2"
+    (let [input 0.00
+          expected "Ноль рублей ноль копеек"]
+      (is (= expected (money input)))))
+
+  (testing "zero kopecks 3"
+    (let [input 0.0
+          expected "Ноль рублей ноль копеек"]
+      (is (= expected (money input)))))
+
+  (testing "kopecks"
+    (let [inputs-to-expected {1.00 "Один рубль ноль копеек"
+                              7.0 "Семь рублей ноль копеек"
+                              28.000 "Двадцать восемь рублей ноль копеек"
+                              37.99 "Тридцать семь рублей девяносто девять копеек"
+                              46.990 "Сорок шесть рублей девяносто девять копеек"
+                              55.994 "Пятьдесят пять рублей девяносто девять копеек"
+                              64.999 "Шестьдесять четыре рубля девяносто девять копеек"}]
+      (doseq [[input expected] inputs-to-expected]
+        (is (= expected (words input)))))))
