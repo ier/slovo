@@ -54,6 +54,9 @@
                          "дециллион"])
 
 
+(def ^:dynamic *feminine-numeral-mode* false)
+
+
 (defn- translate-to-text
   [value index]
   (let [number (->> value trim Integer/parseInt)
@@ -68,8 +71,8 @@
     (cond
       (and (pos? u) (zero? t) (zero? h) (zero? index))
       (cond
-        (= u 1) "один"
-        (= u 2) "два"
+        (= u 1) (if *feminine-numeral-mode* "одна" "один")
+        (= u 2) (if *feminine-numeral-mode* "две" "два")
         (and (>= u 3) (<= u 9)) (units (- u 3)))
 
       :else
@@ -86,10 +89,14 @@
                 r2 (when (and (>= u 3) (<= u 9)) (units (- u 3)))
                 r (cond
                     (= u 1)
-                    (if (= index 1) (fnx [r0 r1 "одна"]) (fnx [r0 r1 "один"]))
+                    (if (= index 1)
+                      (fnx [r0 r1 "одна"])
+                      (fnx [r0 r1 (if *feminine-numeral-mode* "одна" "один")]))
 
                     (= u 2)
-                    (if (= index 1) (fnx [r0 r1 "две"]) (fnx [r0 r1 "два"]))
+                    (if (= index 1)
+                      (fnx [r0 r1 "две"])
+                      (fnx [r0 r1 (if *feminine-numeral-mode* "две" "два")]))
 
                     (or (and (>= u 3) (<= u 9)) (= u 0))
                     (fnx [r0 r1 r2]))
@@ -167,23 +174,24 @@
     (float? number) (let [parts (-> number str (split #"\."))
                           whole (->> parts first Integer/parseInt)
                           scnd (second parts)
+                          l (min (count scnd) 2)
                           fractional (-> scnd
-                                         (subs 0 (count scnd))
+                                         (subs 0 l)
                                          Integer/parseInt)]
                       {:whole whole :fractional fractional})))
 
 
 (defn- kopecks
   [input]
-  (if (zero? input)
-    "копеек"
-    (let [[tens units] (split (str input) #"")]
-      (if (= tens 1)
-        "копеек"
-        (cond
-          (= 1 units) "копейка"
-          (contains? #{2 3 4} units) "копейки"
-          :else "копеек")))))
+  (let [tens (int (/ input 10))
+        units (- input (* tens 10))]
+    (if (or (and (> tens 1) (zero? units))
+             (and (= tens 1) (pos? units)))
+      "копеек"
+      (cond
+        (= 1 units) "копейка"
+        (contains? #{2 3 4} units) "копейки"
+        (contains? #{0 5 6 7 8 9} units) "копеек"))))
 
 
 (defn money
@@ -191,6 +199,7 @@
   (let [{:keys [whole fractional]} (parse-money number)
         whole-words (words whole)
         ruble (rubles whole)
-        fractional-words (in-words fractional)
+        fractional-words (binding [*feminine-numeral-mode* true]
+                           (in-words fractional))
         kopeck (kopecks fractional)]
     (str whole-words " " ruble " " fractional-words " " kopeck)))
