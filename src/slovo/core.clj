@@ -171,12 +171,18 @@
   [number]
   (cond
     (integer? number) {:whole number :fractional 0}
-    (float? number) (let [parts (-> number str (split #"\."))
-                          whole (->> parts first Integer/parseInt)
+    (float? number) (let [parts (-> (->> number
+                                         double
+                                         (format "%.2f"))
+                                    str
+                                    (split #"\."))
+                          whole (->> parts
+                                     first
+                                     Integer/parseInt)
                           scnd (second parts)
-                          l (min (count scnd) 2)
+                          len (min (count scnd) 2)
                           fractional (-> scnd
-                                         (subs 0 l)
+                                         (subs 0 len)
                                          Integer/parseInt)]
                       {:whole whole :fractional fractional})))
 
