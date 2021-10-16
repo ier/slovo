@@ -130,7 +130,6 @@
 
 (defn- in-words
   [number]
-  ;; {:pre ...}
   (if (zero? number)
     "ноль"
     (->> number
@@ -142,13 +141,11 @@
          trim)))
 
 
-(defn words
-  [number]
+(defn words [number]
   (capitalize (in-words number)))
 
 
-(defn- rubles
-  [input]
+(defn- rubles [input]
   (if (zero? input)
     "рублей"
     (let [sub-int (fn [value from to]
@@ -167,8 +164,7 @@
           :else "рублей")))))
 
 
-(defn- parse-money
-  [number]
+(defn- parse-money [number]
   (cond
     (integer? number) {:whole number
                        :fractional 0}
@@ -190,8 +186,7 @@
                        :fractional fractional})))
 
 
-(defn- kopecks
-  [input]
+(defn- kopecks [input]
   (let [tens (int (/ input 10))
         units (- input (* tens 10))]
     (if (or (and (> tens 1) (zero? units))
@@ -203,8 +198,7 @@
         (contains? #{0 5 6 7 8 9} units) "копеек"))))
 
 
-(defn money
-  [number]
+(defn money [number]
   (let [{:keys [whole fractional]} (parse-money number)
         whole-words (words whole)
         ruble (rubles whole)
