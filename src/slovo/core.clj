@@ -57,17 +57,19 @@
                          "дециллион"])
 
 
+(defn- vec->str [v]
+  (->> v
+       (filter #(not (blank? %)))
+       (interpose " ")
+       (apply str)))
+
+
 (defn- translate-to-text
   [value index feminine-numeral-mode]
   (let [number (->> value trim Integer/parseInt)
         u (mod number 10)
         t (quot (mod number 100) 10)
-        h (quot number 100)
-        fnx (fn [v]
-              (->> v
-                   (filter #(not (blank? %)))
-                   (interpose " ")
-                   (apply str)))]
+        h (quot number 100)]
     (cond
       (and (pos? u) (zero? t) (zero? h) (zero? index))
       (cond
@@ -81,7 +83,7 @@
         (cond
           (= t 1)
           (let [r1 (units (- (mod number 100) 3))
-                r (fnx [r0 r1 s])]
+                r (vec->str [r0 r1 s])]
             (if (> index 1) (str r "ов") r))
 
           :else
@@ -90,17 +92,17 @@
                 r (cond
                     (= u 1)
                     (if (= index 1)
-                      (fnx [r0 r1 "одна"])
-                      (fnx [r0 r1 (if feminine-numeral-mode "одна" "один")]))
+                      (vec->str [r0 r1 "одна"])
+                      (vec->str [r0 r1 (if feminine-numeral-mode "одна" "один")]))
 
                     (= u 2)
                     (if (= index 1)
-                      (fnx [r0 r1 "две"])
-                      (fnx [r0 r1 (if feminine-numeral-mode "две" "два")]))
+                      (vec->str [r0 r1 "две"])
+                      (vec->str [r0 r1 (if feminine-numeral-mode "две" "два")]))
 
                     (or (and (>= u 3) (<= u 9)) (= u 0))
-                    (fnx [r0 r1 r2]))
-                rs (fnx [r s])]
+                    (vec->str [r0 r1 r2]))
+                rs (vec->str [r s])]
             (cond
               (= u 1)
               (if (= index 1) (str rs "а") rs)
