@@ -144,7 +144,9 @@
 
 
 (defn words [number]
-  (capitalize (in-words number)))
+  (->> number
+       in-words
+       capitalize))
 
 
 (defn- rubles [input]
@@ -170,15 +172,9 @@
   (cond
     (integer? number) {:whole number
                        :fractional 0}
-    (float? number) (let [value (->> number
-                                     double
-                                     (format "%.3f"))
-                          parts (-> value
-                                    str
-                                    (split #"\."))
-                          whole (->> parts
-                                     first
-                                     Integer/parseInt)
+    (float? number) (let [value (->> number double (format "%.3f"))
+                          parts (-> value str (split #"\."))
+                          whole (->> parts first Integer/parseInt)
                           scnd (second parts)
                           len (min (count scnd) 2)
                           fractional (-> scnd
@@ -192,7 +188,7 @@
   (let [tens (int (/ input 10))
         units (- input (* tens 10))]
     (if (or (and (> tens 1) (zero? units))
-             (and (= tens 1) (pos? units)))
+            (and (= tens 1) (pos? units)))
       "копеек"
       (cond
         (= 1 units) "копейка"
