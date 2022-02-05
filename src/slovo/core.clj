@@ -57,11 +57,8 @@
                          "дециллион"])
 
 
-(def ^:dynamic *feminine-numeral-mode* false)
-
-
 (defn- translate-to-text
-  [value index]
+  [value index feminine-numeral-mode]
   (let [number (->> value trim Integer/parseInt)
         u (mod number 10)
         t (quot (mod number 100) 10)
@@ -74,8 +71,8 @@
     (cond
       (and (pos? u) (zero? t) (zero? h) (zero? index))
       (cond
-        (= u 1) (if *feminine-numeral-mode* "одна" "один")
-        (= u 2) (if *feminine-numeral-mode* "две" "два")
+        (= u 1) (if feminine-numeral-mode "одна" "один")
+        (= u 2) (if feminine-numeral-mode "две" "два")
         (and (>= u 3) (<= u 9)) (units (- u 3)))
 
       :else
@@ -94,12 +91,12 @@
                     (= u 1)
                     (if (= index 1)
                       (fnx [r0 r1 "одна"])
-                      (fnx [r0 r1 (if *feminine-numeral-mode* "одна" "один")]))
+                      (fnx [r0 r1 (if feminine-numeral-mode "одна" "один")]))
 
                     (= u 2)
                     (if (= index 1)
                       (fnx [r0 r1 "две"])
-                      (fnx [r0 r1 (if *feminine-numeral-mode* "две" "два")]))
+                      (fnx [r0 r1 (if feminine-numeral-mode "две" "два")]))
 
                     (or (and (>= u 3) (<= u 9)) (= u 0))
                     (fnx [r0 r1 r2]))
@@ -132,16 +129,18 @@
 
 
 (defn- in-words
-  [number]
-  (if (zero? number)
-    "ноль"
-    (->> number
-         categories
-         (map #(translate-to-text (second %) (first %)))
-         reverse
-         (interpose " ")
-         (reduce str)
-         trim)))
+  ([number]
+   (in-words number false))
+  ([number feminine-numeral-mode]
+   (if (zero? number)
+     "ноль"
+     (->> number
+          categories
+          (map #(translate-to-text (second %) (first %) feminine-numeral-mode))
+          reverse
+          (interpose " ")
+          (reduce str)
+          trim))))
 
 
 (defn words [number]
@@ -205,7 +204,7 @@
   (let [{:keys [whole fractional]} (parse-money number)
         whole-words (words whole)
         ruble (rubles whole)
-        fractional-words (binding [*feminine-numeral-mode* true]
-                           (in-words fractional))
+        feminine-numeral-mode? true
+        fractional-words (in-words fractional feminine-numeral-mode?)
         kopeck (kopecks fractional)]
     (str whole-words " " ruble " " fractional-words " " kopeck)))
