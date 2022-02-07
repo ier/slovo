@@ -3,10 +3,11 @@
             [slovo.core :refer [money words]]))
 
 
-#_(deftest wrong-input
-  ;nil
-  ;""
-  )
+(deftest wrong-input-test
+  (testing "Empty"
+    ;;(is (thrown? NullPointerException (words nil)))
+    ;;(is (thrown? ClassCastException (words "1d")))
+    ))
 
 
 (deftest ru-number-in-words-test
@@ -78,11 +79,6 @@
     (let [input 123456789987
           expected "Сто двадцать три миллиарда четыреста пятьдесят шесть миллионов семьсот восемьдесят девять тысяч девятьсот восемьдесят семь"]
       (is (= expected (words input))))))
-
-
-#_(deftrest negative-values
-  ;-1
-  )
 
 
 (deftest ru-money-in-words-test
