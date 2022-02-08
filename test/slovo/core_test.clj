@@ -59,16 +59,14 @@
 
 
   (testing "1000"
-    (let [inputs-to-expected {1000 "Одна тысяча"}]
+    (let [inputs-to-expected {1000 "Одна тысяча"
+                              1234 "Одна тысяча двести тридцать четыре"
+                              12345 "Двенадцать тысяч триста сорок пять"
+                              123456 "Сто двадцать три тысячи четыреста пятьдесят шесть"}]
       (doseq [[input expected] inputs-to-expected]
         (is (= expected (words input))))))
 
 #_
-  (testing "1234"
-    (let [inputs-to-expected {1234 "Одна тысяча двести тридцать четыре"}]
-      (doseq [[input expected] inputs-to-expected]
-        (is (= expected (words input))))))
-  ;[input 12345]
   ;[input 123456]
   ;[input 1234567]
   ;[input 12345678]
