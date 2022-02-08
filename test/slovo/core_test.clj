@@ -11,17 +11,6 @@
 
 
 (deftest ru-number-in-words-test
-  ;[input 1234]
-  ;[input 12345]
-  ;[input 123456]
-  ;[input 1234567]
-  ;[input 12345678]
-  ;[input 123456789]
-  ;[input 1234567890]
-  ;[input 12345678901]
-  ;[input 987654321010]
-  ;[input 245124123142152172120]
-
   (testing "zero to string"
     (let [input 0
           expected "Ноль"]
@@ -74,6 +63,20 @@
       (doseq [[input expected] inputs-to-expected]
         (is (= expected (words input))))))
 
+#_
+  (testing "1234"
+    (let [inputs-to-expected {1234 "Одна тысяча двести тридцать четыре"}]
+      (doseq [[input expected] inputs-to-expected]
+        (is (= expected (words input))))))
+  ;[input 12345]
+  ;[input 123456]
+  ;[input 1234567]
+  ;[input 12345678]
+  ;[input 123456789]
+  ;[input 1234567890]
+  ;[input 12345678901]
+  ;[input 987654321010]
+  ;[input 245124123142152172120]
 
   (testing "big number to string"
     (let [input 123456789987
