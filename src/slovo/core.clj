@@ -3,7 +3,6 @@
    [clojure.string :refer [trim blank? capitalize split]])
   (:gen-class))
 
-
 (def ^:private hundreds
   ["сто"
    "двести"
@@ -15,7 +14,6 @@
    "восемьсот"
    "девятьсот"])
 
-
 (def ^:private tens
   ["двадцать"
    "тридцать"
@@ -25,7 +23,6 @@
    "семьдесят"
    "восемьдесят"
    "девяносто"])
-
 
 (def ^:private units
   ["три"
@@ -46,7 +43,6 @@
    "восемнадцать"
    "девятнадцать"])
 
-
 (def ^:private sections
   ["тысяч"
    "миллион"
@@ -60,14 +56,12 @@
    "нониллион"
    "дециллион"])
 
-
 (defn- vec->str
   [v]
   (->> v
        (filter #(not (blank? %)))
        (interpose " ")
        (apply str)))
-
 
 (defn- translate-to-text
   [value index feminine-numeral-mode]
@@ -128,7 +122,6 @@
                 (str result "ов")
                 result))))))))
 
-
 (defn- categories
   "Получить пронумерованные разряды единиц, тысяч, миллионов etc."
   [number]
@@ -144,7 +137,6 @@
           (partition 3)
           reverse)))))
 
-
 (defn- in-words
   ([number]
    (in-words number false))
@@ -159,13 +151,11 @@
           (reduce str)
           trim))))
 
-
 (defn words
   [number]
   (->> number
        in-words
        capitalize))
-
 
 (defn- rubles
   [input]
@@ -186,7 +176,6 @@
           (contains? #{2 3 4} units) "рубля"
           :else "рублей")))))
 
-
 (defn- parse-money
   [number]
   (cond
@@ -203,7 +192,6 @@
                       {:whole whole
                        :fractional fractional})))
 
-
 (defn- kopecks
   [input]
   (let [tens (int (/ input 10))
@@ -215,7 +203,6 @@
         (= 1 units) "копейка"
         (contains? #{2 3 4} units) "копейки"
         (contains? #{0 5 6 7 8 9} units) "копеек"))))
-
 
 (defn money
   [number]

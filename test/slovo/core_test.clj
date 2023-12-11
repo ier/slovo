@@ -2,13 +2,11 @@
   (:require [clojure.test :refer [deftest testing is]]
             [slovo.core :refer [money words]]))
 
-
 (deftest wrong-input-test
   (testing "Empty"
     ;;(is (thrown? NullPointerException (words nil)))
     ;;(is (thrown? ClassCastException (words "1d")))
     ))
-
 
 (deftest ru-number-in-words-test
   (testing "zero to string"
@@ -57,7 +55,6 @@
       (doseq [[input expected] inputs-to-expected]
         (is (= expected (words input))))))
 
-
   (testing "1000 and more"
     (let [inputs-to-expected {1000 "Одна тысяча"
                               1234 "Одна тысяча двести тридцать четыре"
@@ -73,7 +70,6 @@
                               245124123142152172120 "Двести сорок пять квинтилионов сто двадцать четыре квадриллиона сто двадцать три триллиона сто сорок два миллиарда сто пятьдесят два миллиона сто семьдесят две тысячи сто двадцать"}]
       (doseq [[input expected] inputs-to-expected]
         (is (= expected (words input)))))))
-
 
 (deftest ru-money-in-words-test
   (testing "zero money to string"
