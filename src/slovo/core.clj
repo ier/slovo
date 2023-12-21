@@ -160,14 +160,8 @@
   [input]
   (if (zero? input)
     "рублей"
-    (let [sub-int (fn [value from to]
-                    (Integer/parseInt (subs value from to)))
-          value (->> input
-                     (format "%03d")
-                     reverse
-                     (reduce str))
-          units (sub-int value 0 1)
-          tens (sub-int value 1 2)]
+    (let [units (mod input 10)
+          tens (mod (int (/ input 10)) 10)]
       (if (= tens 1)
         "рублей"
         (cond
