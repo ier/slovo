@@ -100,7 +100,7 @@
               (= u 1)
               (if (= index 1) (str result "а") result)
 
-              (and (>= u 2) (<= u 4))
+              (<= 2 u 4)
               (if (= index 1)
                 (str result "и")
                 (if (> index 1) (str result "а") result))
