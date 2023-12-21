@@ -83,18 +83,13 @@
           ;; смотрим десятки выше первого...
           (let [t* (when (>= t 2) (tens (- t 2)))
                 u* (when (<= 3 u 9) (units (- u 3)))
-                res (cond
-                      (= u 1)
-                      (if (= index 1)
-                        (vec->str [h* t* "одна"])
-                        (vec->str [h* t* (if feminine-numeral-mode "одна" "один")]))
-
-                      (= u 2)
-                      (if (= index 1)
-                        (vec->str [h* t* "две"])
-                        (vec->str [h* t* (if feminine-numeral-mode "две" "два")]))
-
-                      (or (<= 3 u 9) (= u 0))
+                res (case u
+                      1 (if (= index 1)
+                          (vec->str [h* t* "одна"])
+                          (vec->str [h* t* (if feminine-numeral-mode "одна" "один")]))
+                      2 (if (= index 1)
+                          (vec->str [h* t* "две"])
+                          (vec->str [h* t* (if feminine-numeral-mode "две" "два")]))
                       (vec->str [h* t* u*]))
                 result (vec->str [res s])]
             (cond
