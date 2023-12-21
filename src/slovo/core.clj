@@ -97,16 +97,11 @@
                       (vec->str [h* t* (when (<= 3 u 9) (units (- u 3)))]))
                 result (vec->str [res s])]
             (cond
-              (= u 1)
-              (if (= index 1) (str result "а") result)
-
-              (<= 2 u 4)
-              (if (= index 1)
-                (str result "и")
-                (if (> index 1) (str result "а") result))
-
-              :else
-              (if (> index 1) (str result "ов") result))))))))
+              (or (and (= index 1) (= u 1))
+                  (and (> index 1) (<= 2 u 4))) (str result "а")
+              (and (= index 1) (<= 2 u 4)) (str result "и")
+              (and (> index 1) (or (= 0 u) (> u 4))) (str result "ов")
+              :else (str result))))))))
 
 (defn- categories
   "Получить пронумерованные разряды единиц, тысяч, миллионов etc."
