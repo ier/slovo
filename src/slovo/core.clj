@@ -57,8 +57,7 @@
 
 (defn- vec->str
   [v]
-  (->> v
-       (remove blank?)
+  (->> (remove blank? v)
        (interpose " ")
        (apply str)))
 
@@ -73,7 +72,7 @@
       (cond
         (= u 1) (if feminine-numeral-mode "одна" "один")
         (= u 2) (if feminine-numeral-mode "две" "два")
-        (and (>= u 3) (<= u 9)) (units (- u 3)))
+        (<= 3 u 9) (units (- u 3)))
 
       :else
       (let [h* (when (pos? h) (hundreds (dec h)))
@@ -88,7 +87,7 @@
 
           :else
           (let [t* (when (>= t 2) (tens (- t 2)))
-                u* (when (and (>= u 3) (<= u 9)) (units (- u 3)))
+                u* (when (<= 3 u 9) (units (- u 3)))
                 res (cond
                       (= u 1)
                       (if (= index 1)
@@ -100,7 +99,7 @@
                         (vec->str [h* t* "две"])
                         (vec->str [h* t* (if feminine-numeral-mode "две" "два")]))
 
-                      (or (and (>= u 3) (<= u 9)) (= u 0))
+                      (or (<= 3 u 9) (= u 0))
                       (vec->str [h* t* u*]))
                 result (vec->str [res s])]
             (cond
@@ -112,7 +111,7 @@
                 (str result "и")
                 (if (> index 1) (str result "а") result))
 
-              (or (and (>= u 5) (<= u 9)) (= u 0))
+              (or (<= 3 u 9) (= u 0))
               (if (> index 1) (str result "ов") result))))))))
 
 (defn- categories
