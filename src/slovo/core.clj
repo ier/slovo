@@ -63,7 +63,7 @@
        (apply str)))
 
 (defn- translate-to-text
-  [value index feminine-numeral-mode]
+  [[index value] feminine-numeral-mode]
   (let [number (->> value trim Integer/parseInt)
         u (mod number 10)
         t (quot (mod number 100) 10)
@@ -127,7 +127,7 @@
   (filter
    #(not (blank? (second %)))
    (map-indexed
-    (fn [idx idm] [idx idm])
+    vector
     (map
      #(apply str %)
      (->> number
@@ -144,7 +144,7 @@
      "ноль"
      (->> number
           categories
-          (map #(translate-to-text (second %) (first %) feminine-numeral-mode))
+          (map #(translate-to-text % feminine-numeral-mode))
           reverse
           (interpose " ")
           (reduce str)
