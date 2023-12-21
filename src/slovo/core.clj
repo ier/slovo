@@ -67,25 +67,20 @@
         u (mod number 10)
         t (quot (mod number 100) 10)
         h (quot number 100)]
-    (cond
-      (and (pos? u) (zero? t) (zero? h) (zero? index))
+    (if (and (pos? u) (zero? t) (zero? h) (zero? index))
+      ;; смотрим разряд единиц...
       (cond
         (= u 1) (if feminine-numeral-mode "одна" "один")
         (= u 2) (if feminine-numeral-mode "две" "два")
         (<= 3 u 9) (units (- u 3)))
-
-      :else
+      ;; смотрим разряды выше единицы
       (let [h* (when (pos? h) (hundreds (dec h)))
             s (when (pos? index) (sections (dec index)))]
-        (cond
-          (= t 1)
-          (let [t* (units (- (mod number 100) 3))
-                res (vec->str [h* t* s])]
-            (if (> index 1)
-              (str res "ов")
-              res))
-
-          :else
+        (if (= t 1)
+          ;; смотрим первый десяток...
+          (let [res (vec->str [h* (units (- (mod number 100) 3)) s])]
+            (if (> index 1) (str res "ов") res))
+          ;; смотрим десятки выше первого...
           (let [t* (when (>= t 2) (tens (- t 2)))
                 u* (when (<= 3 u 9) (units (- u 3)))
                 res (cond
