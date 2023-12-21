@@ -178,7 +178,7 @@
                           parts (-> value str (split #"\."))
                           whole (->> parts first Integer/parseInt)
                           scnd (second parts)
-                          len (min (count scnd) 2)
+                          len (-> scnd count (min 2))
                           fractional (-> scnd (subs 0 len) Integer/parseInt)]
                       {:whole whole
                        :fractional fractional})))
