@@ -172,16 +172,19 @@
 (defn- parse-money
   [number]
   (cond
-    (integer? number) {:whole number
-                       :fractional 0}
-    (float? number) (let [value (->> number double (format "%.3f"))
-                          parts (-> value str (split #"\."))
-                          whole (->> parts first Integer/parseInt)
-                          scnd (second parts)
-                          len (-> scnd count (min 2))
-                          fractional (-> scnd (subs 0 len) Integer/parseInt)]
-                      {:whole whole
-                       :fractional fractional})))
+    (integer? number)
+    {:whole number
+     :fractional 0}
+
+    (float? number)
+    (let [value (->> number double (format "%.3f"))
+          parts (-> value str (split #"\."))
+          whole (->> parts first Integer/parseInt)
+          scnd (second parts)
+          len (-> scnd count (min 2))
+          fractional (-> scnd (subs 0 len) Integer/parseInt)]
+      {:whole whole
+       :fractional fractional})))
 
 (defn- kopecks
   [input]
