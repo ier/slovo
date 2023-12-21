@@ -58,7 +58,7 @@
 (defn- vec->str
   [v]
   (->> v
-       (filter #(not (blank? %)))
+       (remove blank?)
        (interpose " ")
        (apply str)))
 
@@ -193,7 +193,6 @@
   (let [{:keys [whole fractional]} (parse-money number)
         whole-words (words whole)
         ruble (rubles whole)
-        feminine-numeral-mode? true
-        fractional-words (in-words fractional feminine-numeral-mode?)
+        fractional-words (in-words fractional true)
         kopeck (kopecks fractional)]
     (str whole-words " " ruble " " fractional-words " " kopeck)))
