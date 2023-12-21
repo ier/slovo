@@ -151,10 +151,9 @@
   [input]
   (if (zero? input)
     "рублей"
-    (let [units (mod input 10)
-          tens (-> input (mod 100) (quot 10))]
-      (if (= tens 1)
-        "рублей"
+    (if (-> input (mod 100) (quot 10) (= 1))
+      "рублей"
+      (let [units (mod input 10)]
         (cond
           (= 1 units) "рубль"
           (contains? #{2 3 4} units) "рубля"
