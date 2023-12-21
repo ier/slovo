@@ -124,17 +124,14 @@
 (defn- categories
   "Получить пронумерованные разряды единиц, тысяч, миллионов etc."
   [number]
-  (filter
-   #(not (blank? (second %)))
-   (map-indexed
-    vector
-    (map
-     #(apply str %)
-     (->> number
-          biginteger
-          (format "%36d")
-          (partition 3)
-          reverse)))))
+  (->> number
+       biginteger
+       (format "%36d")
+       (partition 3)
+       reverse
+       (map #(apply str %))
+       (remove blank?)
+       (map-indexed vector)))
 
 (defn- in-words
   ([number]
