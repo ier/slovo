@@ -161,7 +161,7 @@
   (if (zero? input)
     "рублей"
     (let [units (mod input 10)
-          tens (mod (int (/ input 10)) 10)]
+          tens (-> input (mod 100) (quot 10))]
       (if (= tens 1)
         "рублей"
         (cond
@@ -179,9 +179,7 @@
                           whole (->> parts first Integer/parseInt)
                           scnd (second parts)
                           len (min (count scnd) 2)
-                          fractional (-> scnd
-                                         (subs 0 len)
-                                         Integer/parseInt)]
+                          fractional (-> scnd (subs 0 len) Integer/parseInt)]
                       {:whole whole
                        :fractional fractional})))
 
