@@ -105,21 +105,15 @@
                 result (vec->str [res s])]
             (cond
               (= u 1)
-              (if (= index 1)
-                (str result "а")
-                result)
+              (if (= index 1) (str result "а") result)
 
               (and (>= u 2) (<= u 4))
               (if (= index 1)
                 (str result "и")
-                (if (> index 1)
-                  (str result "а")
-                  result))
+                (if (> index 1) (str result "а") result))
 
               (or (and (>= u 5) (<= u 9)) (= u 0))
-              (if (> index 1)
-                (str result "ов")
-                result))))))))
+              (if (> index 1) (str result "ов") result))))))))
 
 (defn- categories
   "Получить пронумерованные разряды единиц, тысяч, миллионов etc."
@@ -174,8 +168,8 @@
      :fractional 0}
 
     (float? number)
-    (let [value (->> number double (format "%.3f"))
-          parts (-> value str (split #"\."))
+    (let [value (->> number double (format "%.3f") str)
+          parts (split value #"\.")
           whole (->> parts first Integer/parseInt)
           scnd (second parts)
           len (-> scnd count (min 2))
