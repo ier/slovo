@@ -105,7 +105,7 @@
                 (str result "и")
                 (if (> index 1) (str result "а") result))
 
-              (or (<= 3 u 9) (= u 0))
+              :else
               (if (> index 1) (str result "ов") result))))))))
 
 (defn- categories
