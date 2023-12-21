@@ -1,7 +1,6 @@
 (ns slovo.core
   (:require
-   [clojure.string :refer [trim blank? capitalize split]])
-  (:gen-class))
+   [clojure.string :refer [trim blank? capitalize split]]))
 
 (def ^:private hundreds
   ["сто"
