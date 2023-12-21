@@ -61,12 +61,17 @@
        (interpose " ")
        (apply str)))
 
+(defn- parse-parts
+  [value]
+  (let [number (->> value trim Integer/parseInt)]
+    [number
+     (mod number 10)
+     (quot (mod number 100) 10)
+     (quot number 100)]))
+
 (defn- translate-to-text
   [[index value] feminine-numeral-mode]
-  (let [number (->> value trim Integer/parseInt)
-        u (mod number 10)
-        t (quot (mod number 100) 10)
-        h (quot number 100)]
+  (let [[number u t h] (parse-parts value)]
     (if (and (pos? u) (zero? t) (zero? h) (zero? index))
       ;; смотрим разряд единиц...
       (cond
