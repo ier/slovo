@@ -87,7 +87,6 @@
             (if (> index 1) (str res "ов") res))
           ;; смотрим десятки выше первого...
           (let [t* (when (>= t 2) (tens (- t 2)))
-                u* (when (<= 3 u 9) (units (- u 3)))
                 res (case u
                       1 (if (= index 1)
                           (vec->str [h* t* "одна"])
@@ -95,7 +94,7 @@
                       2 (if (= index 1)
                           (vec->str [h* t* "две"])
                           (vec->str [h* t* (if feminine-numeral-mode "две" "два")]))
-                      (vec->str [h* t* u*]))
+                      (vec->str [h* t* (when (<= 3 u 9) (units (- u 3)))]))
                 result (vec->str [res s])]
             (cond
               (= u 1)
