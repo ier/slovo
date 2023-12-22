@@ -85,19 +85,15 @@
   [[index value] feminine-numeral-mode]
   (let [[number u t h] (parse-parts value)]
     (if (and (pos? u) (zero? t) (zero? h) (zero? index))
-      ;; смотрим разряд единиц...
-      (cond
-        (= u 1) (if feminine-numeral-mode "одна" "один")
-        (= u 2) (if feminine-numeral-mode "две" "два")
-        :else (units (- u 3)))
-      ;; смотрим разряды выше единицы
+      (case u
+        1 (if feminine-numeral-mode "одна" "один")
+        2 (if feminine-numeral-mode "две" "два")
+        (units (- u 3)))
       (let [h* (when (pos? h) (hundreds (dec h)))
             s (when (pos? index) (sections (dec index)))]
         (if (= t 1)
-          ;; смотрим первый десяток...
           (let [res (vec->str [h* (units (- (mod number 100) 3)) s])]
             (if (> index 1) (str res "ов") res))
-          ;; смотрим десятки выше первого...
           (let [result (-> [(build u t h* index feminine-numeral-mode) s] vec->str)]
             (cond
               (or (and (= index 1) (= u 1))
@@ -114,7 +110,7 @@
        (format "%36d")
        (partition 3)
        reverse
-       (map #(apply str %))
+       (map (fn [chunk] (apply str chunk)))
        (remove blank?)
        (map-indexed vector)))
 
@@ -126,7 +122,7 @@
      "ноль"
      (->> number
           categories
-          (map #(translate-to-text % feminine-numeral-mode))
+          (map (fn [category] (translate-to-text category feminine-numeral-mode)))
           reverse
           (interpose " ")
           (reduce str)
@@ -154,8 +150,7 @@
   [number]
   (cond
     (integer? number)
-    {:whole number
-     :fractional 0}
+    {:whole number :fractional 0}
 
     (float? number)
     (let [value (->> number double (format "%.3f") str)
@@ -164,8 +159,7 @@
           scnd (second parts)
           len (-> scnd count (min 2))
           fractional (-> scnd (subs 0 len) Integer/parseInt)]
-      {:whole whole
-       :fractional fractional})))
+      {:whole whole :fractional fractional})))
 
 (defn- kopecks
   [input]
