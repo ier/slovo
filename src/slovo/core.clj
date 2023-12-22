@@ -69,6 +69,18 @@
      (quot (mod number 100) 10)
      (quot number 100)]))
 
+(defn- build
+  [u t h index feminine-numeral-mode]
+  (let [t* (when (>= t 2) (tens (- t 2)))]
+    (case u
+      1 (if (= index 1)
+          (vec->str [h t* "одна"])
+          (vec->str [h t* (if feminine-numeral-mode "одна" "один")]))
+      2 (if (= index 1)
+          (vec->str [h t* "две"])
+          (vec->str [h t* (if feminine-numeral-mode "две" "два")]))
+      (vec->str [h t* (when (<= 3 u 9) (units (- u 3)))]))))
+
 (defn- translate-to-text
   [[index value] feminine-numeral-mode]
   (let [[number u t h] (parse-parts value)]
@@ -77,7 +89,7 @@
       (cond
         (= u 1) (if feminine-numeral-mode "одна" "один")
         (= u 2) (if feminine-numeral-mode "две" "два")
-        (<= 3 u 9) (units (- u 3)))
+        :else (units (- u 3)))
       ;; смотрим разряды выше единицы
       (let [h* (when (pos? h) (hundreds (dec h)))
             s (when (pos? index) (sections (dec index)))]
@@ -86,16 +98,7 @@
           (let [res (vec->str [h* (units (- (mod number 100) 3)) s])]
             (if (> index 1) (str res "ов") res))
           ;; смотрим десятки выше первого...
-          (let [t* (when (>= t 2) (tens (- t 2)))
-                res (case u
-                      1 (if (= index 1)
-                          (vec->str [h* t* "одна"])
-                          (vec->str [h* t* (if feminine-numeral-mode "одна" "один")]))
-                      2 (if (= index 1)
-                          (vec->str [h* t* "две"])
-                          (vec->str [h* t* (if feminine-numeral-mode "две" "два")]))
-                      (vec->str [h* t* (when (<= 3 u 9) (units (- u 3)))]))
-                result (vec->str [res s])]
+          (let [result (-> [(build u t h* index feminine-numeral-mode) s] vec->str)]
             (cond
               (or (and (= index 1) (= u 1))
                   (and (> index 1) (<= 2 u 4))) (str result "а")
