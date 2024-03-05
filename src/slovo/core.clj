@@ -71,15 +71,16 @@
 
 (defn- build
   [u t h index feminine-numeral-mode]
-  (let [t* (when (>= t 2) (tens (- t 2)))]
-    (case u
-      1 (if (= index 1)
-          (vec->str [h t* "одна"])
-          (vec->str [h t* (if feminine-numeral-mode "одна" "один")]))
-      2 (if (= index 1)
-          (vec->str [h t* "две"])
-          (vec->str [h t* (if feminine-numeral-mode "две" "два")]))
-      (vec->str [h t* (when (<= 3 u 9) (units (- u 3)))]))))
+  (let [t* (when (>= t 2) (tens (- t 2)))
+        s (case u
+            1 (if (= index 1)
+                "одна"
+                (if feminine-numeral-mode "одна" "один"))
+            2 (if (= index 1)
+                "две"
+                (if feminine-numeral-mode "две" "два"))
+            (when (<= 3 u 9) (units (- u 3))))]
+    (vec->str [h t* s])))
 
 (defn- translate-to-text
   [[index value] feminine-numeral-mode]
